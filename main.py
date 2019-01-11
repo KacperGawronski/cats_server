@@ -47,7 +47,7 @@ class HandlingConnectionThread(threading.Thread):
         print(self.__result)
         print("{:.2%}".format(self.__result[0][0]))
         if self.__result[0][0]>0.6:
-        '''
+            '''
             self.__socket.sendall("To jest kot".encode('ascii'))
         else:
             self.__socket.sendall("To nie jest kot".encode('ascii'))
