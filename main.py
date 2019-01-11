@@ -31,6 +31,7 @@ class HandlingConnectionThread(threading.Thread):
         print(self.__result)
         print("{:.2%}".format(self.__result[0][0]))
         if self.__result[0][0]>0.6:
+        '''
             self.__socket.sendall("To jest kot".encode('ascii'))
         else:
             self.__socket.sendall("To nie jest kot".encode('ascii'))
@@ -38,7 +39,7 @@ class HandlingConnectionThread(threading.Thread):
             self.__socket.sendall("To jest kot na {:.2%}".format(self.__result[0][0]).encode('ascii'))
         else:
             self.__socket.sendall("To nie jest kot na {:.2%}".format((self.__result[0][1])).encode('ascii'))
-            '''
+            
         self.__socket.close() 
 class Server:
     def __init__(self):
