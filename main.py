@@ -6,11 +6,13 @@ from skimage.data import imread
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.externals import joblib
 import socket
+import numpy as np
 img_x =  240
 img_y =  180
 n_connections=10
 class HandlingConnectionThread(threading.Thread):
     def __init__(self,socket_obj,model):
+        threading.Thread.__init__(self)
         self.__socket=socket_obj
         self.__model=model
     def run(self):
@@ -21,16 +23,23 @@ class HandlingConnectionThread(threading.Thread):
         self.__image=io.BytesIO()
         tmp_recv=self.__socket.recv(1024)
         while(tmp_recv):
-            self.image.write(tmp_recv)
+            self.__image.write(tmp_recv)
             tmp_recv=self.__socket.recv(1024)
     def __checkImage(self):
-        self.__result=self.model.predict_proba([np.array(color.rgb2gray(transform.resize(imread(self.__image),(img_x,img_y)))).reshape(img_x*img_y)])
+        self.__result=self.__model.predict_proba([np.array(color.rgb2gray(transform.resize(imread(self.__image),(img_x,img_y)))).reshape(img_x*img_y)])
     def __sendResponse(self):
-        if self.__result[0]>0.5:
-            self.__socket.sendall("To jest kot na {}%".format(self.__result[0]*100))
+        print(self.__result)
+        print("{:.2%}".format(self.__result[0][0]))
+        if self.__result[0][0]>0.6:
+            self.__socket.sendall("To jest kot".encode('ascii'))
         else:
-            self.__socket.sendall("To nie jest kot na {}%".format((1-self.__result[0])*100))
-
+            self.__socket.sendall("To nie jest kot".encode('ascii'))
+            '''
+            self.__socket.sendall("To jest kot na {:.2%}".format(self.__result[0][0]).encode('ascii'))
+        else:
+            self.__socket.sendall("To nie jest kot na {:.2%}".format((self.__result[0][1])).encode('ascii'))
+            '''
+        self.__socket.close() 
 class Server:
     def __init__(self):
         self.__port=9500
