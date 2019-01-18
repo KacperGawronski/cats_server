@@ -48,9 +48,9 @@ class HandlingConnectionThread(threading.Thread):
         print("{:.2%}".format(self.__result[0][0]))
         if self.__result[0][0]>0.53:
             
-            self.__socket.sendall("To jest kot".encode('ascii'))
+            self.__socket.sendall("Image contains cat.".encode('ascii'))
         else:
-            self.__socket.sendall("To nie jest kot".encode('ascii'))
+            self.__socket.sendall("Image doesn't contain a cat.".encode('ascii'))
             '''
             self.__socket.sendall("To jest kot na {:.2%}".format(self.__result[0][0]).encode('ascii'))
         else:
